@@ -1,21 +1,24 @@
 import * as React from 'react';
-import { View, Text, Platform, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useEffect, useState } from "react";
 import { getDatabase, ref, remove } from "firebase/database";
 
 function ConsultantProfile({ route, navigation }) {
     const [consultant, setConsultant] = useState({});
-
+    const db = getDatabase();
+    
     useEffect(() => {
-        setConsultant(route.params.consultant[1]);
+        if (route.params && route.params.consultant) {
+            setConsultant(route.params.consultant[1]);
+        }
         return () => {
             setConsultant({});
         };
     }, []);
 
     const handleEdit = () => {
-        const consultant = route.params.consultant;
-        navigation.navigate('Edit Consultant', { consultant });
+        const consultantData = route.params.consultant;
+        navigation.navigate('Edit Consultant', { consultant: consultantData });
     };
 
     const confirmDelete = () => {
@@ -26,7 +29,16 @@ function ConsultantProfile({ route, navigation }) {
     };
 
     const handleDelete = async () => {
-        // ... (resten af koden er uændret)
+        try {
+            const id = route.params.consultant[0];
+            const consultantRef = ref(db, `Consultants/${id}`);
+            await remove(consultantRef);
+            Alert.alert('Slettet', 'Konsulenten er slettet');
+            navigation.goBack();
+        } catch (error) {
+            Alert.alert('Fejl', 'Noget gik galt. Kunne ikke slette konsulenten.');
+            console.error(`Error: ${error.message}`);
+        }
     };
 
     if (!consultant) {
@@ -36,22 +48,20 @@ function ConsultantProfile({ route, navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => handleEdit()}>
+                <TouchableOpacity style={styles.button} onPress={handleEdit}>
                     <Text style={styles.buttonText}>Rediger</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={() => confirmDelete()}>
+                <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={confirmDelete}>
                     <Text style={styles.buttonText}>Slet</Text>
                 </TouchableOpacity>
             </View>
             {
-                Object.entries(consultant).map((item, index) => {
-                    return (
-                        <View style={styles.row} key={index}>
-                            <Text style={styles.label}>{item[0]} </Text>
-                            <Text style={styles.value}>{item[1]}</Text>
-                        </View>
-                    );
-                })
+                Object.entries(consultant).map((item, index) => (
+                    <View style={styles.row} key={index}>
+                        <Text style={styles.label}>{item[0]} </Text>
+                        <Text style={styles.value}>{item[1]}</Text>
+                    </View>
+                ))
             }
         </View>
     );

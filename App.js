@@ -1,20 +1,19 @@
-// Importerer nødvendige moduler fra React, React Native og andre biblioteker
-import React, { useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { getApps, initializeApp } from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-// Importerer brugerdefinerede komponenter
 import AddEditConsultant from './components/AddEditConsultant'; 
 import ConsultantProfile from './components/ConsultantProfile'; 
 import ConsultantList from './components/ConsultantList'; 
 
-// Importerer ikoner fra react-native-vector-icons
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-// Hoved App komponent
+// Create a Context for Consultant
+export const ConsultantContext = createContext();
+
 export default function App() {
   
   const firebaseConfig = {
