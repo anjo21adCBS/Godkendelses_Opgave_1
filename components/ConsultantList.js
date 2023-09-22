@@ -1,27 +1,10 @@
-import * as React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useEffect, useState } from "react";
-import { getDatabase, ref, onValue, off } from "firebase/database";
+import { ConsultantContext } from './ConsultantContext';
 
 function ConsultantList({ navigation }) {
 
-    const [consultants, setConsultants] = useState();
-
-    useEffect(() => {
-        const db = getDatabase();
-        const consultantsRef = ref(db, "Consultants");
-
-        onValue(consultantsRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                setConsultants(data);
-            }
-        });
-
-        return () => {
-            off(consultantsRef);
-        };
-    }, []);
+    const { consultants, setConsultants } = useContext(ConsultantContext);
 
     // Loading state
     if (!consultants) {

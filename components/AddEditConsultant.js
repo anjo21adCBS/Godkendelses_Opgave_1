@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -9,11 +9,11 @@ import {
     ScrollView,
     SafeAreaView,
 } from 'react-native';
-import { useEffect, useState } from "react";
 import { getDatabase, ref, child, push, update } from "firebase/database";
+import { ConsultantContext } from './ConsultantContext';
 
 function AddEditConsultant({ navigation, route }) {
-
+    const { consultants, setConsultants } = useContext(ConsultantContext);
     const db = getDatabase();
 
     const initialState = {
@@ -24,7 +24,6 @@ function AddEditConsultant({ navigation, route }) {
     };
 
     const [newConsultant, setNewConsultant] = useState(initialState);
-
     const isEditConsultant = route.name === "Edit Consultant";
 
     useEffect(() => {
@@ -38,55 +37,28 @@ function AddEditConsultant({ navigation, route }) {
             setNewConsultant(initialState);
         };
     }, []);
-    
 
     const changeTextInput = (name, event) => {
         setNewConsultant({ ...newConsultant, [name]: event });
     };
 
     const handleSave = async () => {
-
-        const { name, expertise, experience, contactInfo } = newConsultant;
-
-        if (name.length === 0 || expertise.length === 0 || experience.length === 0 || contactInfo.length === 0) {
-            return Alert.alert('Et af felterne er tomme!');
-        }
+        // ... (din eksisterende kode)
 
         if (isEditConsultant) {
-            const id = route.params.consultant[0];
-            const consultantRef = ref(db, `Consultants/${id}`);
-            const updatedFields = {
-                name,
-                expertise,
-                experience,
-                contactInfo,
-            };
-            await update(consultantRef, updatedFields)
-                .then(() => {
-                    Alert.alert("Din info er nu opdateret");
-                    const consultant = newConsultant;
-                    navigation.navigate("Consultant Profile", { consultant });
-                })
-                .catch((error) => {
-                    console.error(`Error: ${error.message}`);
-                });
-
+            // ... (din eksisterende kode for at opdatere en konsulent)
+            setConsultants({
+                ...consultants,
+                [route.params.consultant[0]]: newConsultant
+            });
         } else {
-            const consultantsRef = ref(db, "/Consultants/");
-            const newConsultantData = {
-                name,
-                expertise,
-                experience,
-                contactInfo,
-            };
-            await push(consultantsRef, newConsultantData)
-                .then(() => {
-                    Alert.alert("Saved");
-                    setNewConsultant(initialState);
-                })
-                .catch((error) => {
-                    console.error(`Error: ${error.message}`);
-                });
+            // ... (din eksisterende kode for at tilføje en ny konsulent)
+            const newConsultantRef = await push(ref(db, "/Consultants/"), newConsultant);
+            const newConsultantId = newConsultantRef.key;
+            setConsultants({
+                ...consultants,
+                [newConsultantId]: newConsultant
+            });
         }
     };
 

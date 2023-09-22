@@ -1,18 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 import { getApps, initializeApp } from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { ConsultantProvider } from './components/ConsultantContext';
 
 import AddEditConsultant from './components/AddEditConsultant'; 
 import ConsultantProfile from './components/ConsultantProfile'; 
 import ConsultantList from './components/ConsultantList'; 
 
 import Ionicons from "react-native-vector-icons/Ionicons";
-
-// Create a Context for Consultant
-export const ConsultantContext = createContext();
 
 export default function App() {
   
@@ -44,7 +41,6 @@ export default function App() {
   const StackNavigation = () => {
     return (
       <Stack.Navigator>
-        {/* Definerer stack skærme */}
         <Stack.Screen name={'Consultant List'} component={ConsultantList} />
         <Stack.Screen name={'Consultant Profile'} component={ConsultantProfile} />
         <Stack.Screen name={'Edit Consultant'} component={AddEditConsultant} />
@@ -52,32 +48,22 @@ export default function App() {
     );
   };
 
-  // Hovedreturfunktion for App-komponenten
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        {/* Definerer faneblade */}
-        <Tab.Screen 
-          name={'Home'} 
-          component={StackNavigation} 
-          options={{ tabBarIcon: () => (<Ionicons name="home" size={20} />), headerShown: null }}
-        />
-        <Tab.Screen 
-          name={'Add'} 
-          component={AddEditConsultant} 
-          options={{ tabBarIcon: () => (<Ionicons name="add" size={20} />) }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <ConsultantProvider>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen 
+            name={'Home'} 
+            component={StackNavigation} 
+            options={{ tabBarIcon: () => (<Ionicons name="home" size={20} />), headerShown: null }}
+          />
+          <Tab.Screen 
+            name={'Add'} 
+            component={AddEditConsultant} 
+            options={{ tabBarIcon: () => (<Ionicons name="add" size={20} />) }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </ConsultantProvider>
   );
 }
-
-// Definerer stilarter for App-komponenten
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

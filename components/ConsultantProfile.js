@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useEffect, useState } from "react";
 import { getDatabase, ref, remove } from "firebase/database";
+import { ConsultantContext } from './ConsultantContext';
 
 function ConsultantProfile({ route, navigation }) {
+    const { consultants, setConsultants } = useContext(ConsultantContext);
     const [consultant, setConsultant] = useState({});
     const db = getDatabase();
     
