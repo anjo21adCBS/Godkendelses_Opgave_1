@@ -1,3 +1,4 @@
+// Importerer nødvendige moduler og hooks fra React og React Native
 import React, { useContext, useEffect, useState } from 'react';
 import {
     View,
@@ -9,13 +10,22 @@ import {
     ScrollView,
     SafeAreaView,
 } from 'react-native';
+
+// Importerer Firebase database funktioner
 import { getDatabase, ref, child, push, update } from "firebase/database";
+
+// Importerer ConsultantContext for at dele data mellem komponenter
 import { ConsultantContext } from './ConsultantContext';
 
+// Definerer AddEditConsultant komponenten
 function AddEditConsultant({ navigation, route }) {
+    // Bruger useContext hook til at få adgang til consultants og setConsultants
     const { consultants, setConsultants } = useContext(ConsultantContext);
+
+    // Initialiserer Firebase database
     const db = getDatabase();
 
+    // Definerer initial state for en ny konsulent
     const initialState = {
         name: '',
         expertise: '',
@@ -23,9 +33,13 @@ function AddEditConsultant({ navigation, route }) {
         contactInfo: ''
     };
 
+    // Bruger useState hook til at styre state for en ny eller eksisterende konsulent
     const [newConsultant, setNewConsultant] = useState(initialState);
+
+    // Tjekker om vi er i "Edit Consultant" tilstand
     const isEditConsultant = route.name === "Edit Consultant";
 
+    // Bruger useEffect hook til at sætte state, når komponenten monteres eller opdateres
     useEffect(() => {
         if (isEditConsultant) {
             const consultant = route.params.consultant[1];
@@ -38,21 +52,22 @@ function AddEditConsultant({ navigation, route }) {
         };
     }, []);
 
+    // Funktion til at ændre tekstinput
     const changeTextInput = (name, event) => {
         setNewConsultant({ ...newConsultant, [name]: event });
     };
 
+    // Funktion til at gemme konsulentdata
     const handleSave = async () => {
-        // ... (din eksisterende kode)
-
+       
         if (isEditConsultant) {
-            // ... (din eksisterende kode for at opdatere en konsulent)
+            
             setConsultants({
                 ...consultants,
                 [route.params.consultant[0]]: newConsultant
             });
         } else {
-            // ... (din eksisterende kode for at tilføje en ny konsulent)
+          
             const newConsultantRef = await push(ref(db, "/Consultants/"), newConsultant);
             const newConsultantId = newConsultantRef.key;
             setConsultants({
@@ -62,6 +77,7 @@ function AddEditConsultant({ navigation, route }) {
         }
     };
 
+    // Returnerer JSX til at render komponenten
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
@@ -88,8 +104,10 @@ function AddEditConsultant({ navigation, route }) {
     );
 }
 
+// Eksporterer AddEditConsultant komponenten
 export default AddEditConsultant;
 
+// Definerer styles til komponenten
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -1,27 +1,36 @@
+// Importerer nødvendige moduler og komponenter fra React og React Native
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { getDatabase, ref, remove } from "firebase/database";
-import { ConsultantContext } from './ConsultantContext';
+import { ConsultantContext } from './ConsultantContext'; // Importerer ConsultantContext
 
+// Definerer ConsultantProfile komponenten
 function ConsultantProfile({ route, navigation }) {
+    // Bruger useContext hook til at få adgang til ConsultantContext
     const { consultants, setConsultants } = useContext(ConsultantContext);
+    // Opretter lokal tilstand for den valgte konsulent
     const [consultant, setConsultant] = useState({});
+    // Henter en reference til Firebase-databasen
     const db = getDatabase();
     
+    // Bruger useEffect til at opdatere den lokale tilstand, når komponenten monteres
     useEffect(() => {
         if (route.params && route.params.consultant) {
             setConsultant(route.params.consultant[1]);
         }
+        // Nulstiller tilstanden, når komponenten afmonteres
         return () => {
             setConsultant({});
         };
     }, []);
 
+    // Funktion til at navigere til redigeringsskærmen
     const handleEdit = () => {
         const consultantData = route.params.consultant;
         navigation.navigate('Edit Consultant', { consultant: consultantData });
     };
 
+    // Funktion til at bekræfte sletning af en konsulent
     const confirmDelete = () => {
         Alert.alert('Er du sikker?', 'Vil du slette konsulenten?', [
             { text: 'Annuller', style: 'cancel' },
@@ -29,6 +38,7 @@ function ConsultantProfile({ route, navigation }) {
         ]);
     };
 
+    // Funktion til at slette en konsulent fra databasen
     const handleDelete = async () => {
         try {
             const id = route.params.consultant[0];
@@ -42,10 +52,12 @@ function ConsultantProfile({ route, navigation }) {
         }
     };
 
+    // Hvis der ikke er nogen konsulentdata, vises en tekst
     if (!consultant) {
         return <Text>Ingen data</Text>;
     }
 
+    // Returnerer komponentens layout
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
@@ -68,8 +80,10 @@ function ConsultantProfile({ route, navigation }) {
     );
 }
 
+// Eksporterer ConsultantProfile komponenten
 export default ConsultantProfile;
 
+// Definerer styles med StyleSheet
 const styles = StyleSheet.create({
     container: {
         flex: 1,

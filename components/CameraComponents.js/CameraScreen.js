@@ -1,3 +1,4 @@
+// Importerer nødvendige moduler og komponenter
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Camera } from "expo-camera";
 import { Image, Linking, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -5,13 +6,16 @@ import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import Icon from 'react-native-vector-icons/Ionicons';
 
+// Kameraskærmens hovedkomponent
 const CameraScreen = ({ navigation }) => {
+  // Opretter referencer og tilstandsvariabler
   const cameraRef = useRef();
   const [hasPermission, setHasPermission] = useState(null);
   const [imagesArr, setImagesArr] = useState([]);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [loading, setLoading] = useState(false);
 
+  // Anvender useEffect til at anmode om kamera- og billedrulleadgang
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -29,10 +33,10 @@ const CameraScreen = ({ navigation }) => {
     })();
   }, []);
 
+  // Håndterer tilfælde, hvor tilladelse ikke er givet
   if (hasPermission === null) {
     return <View />;
   }
-
   if (hasPermission === false) {
     return (
       <View style={styles.gallery}>
@@ -44,6 +48,7 @@ const CameraScreen = ({ navigation }) => {
     );
   }
 
+  // Funktion til at tage et billede
   const snap = async () => {
     if (!cameraRef.current) {
       return;
@@ -54,6 +59,7 @@ const CameraScreen = ({ navigation }) => {
     setLoading(false);
   };
 
+  // Komponent til at vise tagne billeder
   const CameraGallery = () => {
     return (
       <View style={styles.gallery}>
@@ -73,6 +79,7 @@ const CameraScreen = ({ navigation }) => {
     );
   };
 
+  // Funktion til at vælge et billede fra billedrullen
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -85,6 +92,7 @@ const CameraScreen = ({ navigation }) => {
     }
   };
 
+  // Returnerer hovedkomponenten
   return (
     <Fragment>
       <StatusBar StatusBarStyle="dark-content" style={{ fontcolor: "white" }} backgroundColor={'rgba(255,255,255,0.4)'} />
@@ -126,6 +134,7 @@ const CameraScreen = ({ navigation }) => {
   );
 }
 
+// Definerer styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -164,4 +173,5 @@ const styles = StyleSheet.create({
   }
 });
 
+// Eksporterer komponenten
 export default CameraScreen;

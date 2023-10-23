@@ -1,12 +1,15 @@
+// Importerer nødvendige moduler og komponenter fra React og React Native
 import React, { useContext, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { ConsultantContext } from './ConsultantContext';
+import { ConsultantContext } from './ConsultantContext'; // Importerer ConsultantContext
 
+// Definerer ConsultantList komponenten
 function ConsultantList({ navigation }) {
 
+    // Bruger useContext hook til at få adgang til ConsultantContext
     const { consultants, setConsultants } = useContext(ConsultantContext);
 
-    // Loading state
+    // Viser en indlæsningsindikator, hvis consultants ikke er tilgængelige
     if (!consultants) {
         return (
             <View style={styles.loadingContainer}>
@@ -16,14 +19,17 @@ function ConsultantList({ navigation }) {
         );
     }
 
+    // Håndterer valg af en konsulent
     const handleSelectConsultant = id => {
         const consultant = Object.entries(consultants).find(consultant => consultant[0] === id);
         navigation.navigate('Consultant Profile', { consultant });
     };
 
+    // Konverterer consultants objektet til et array for nemmere håndtering
     const consultantArray = Object.values(consultants);
     const consultantKeys = Object.keys(consultants);
 
+    // Returnerer en FlatList for at vise konsulentinformation
     return (
         <FlatList
             data={consultantArray}
@@ -41,8 +47,10 @@ function ConsultantList({ navigation }) {
     );
 }
 
+// Eksporterer ConsultantList komponenten
 export default ConsultantList;
 
+// Definerer styles med StyleSheet
 const styles = StyleSheet.create({
     container: {
         flex: 1,
