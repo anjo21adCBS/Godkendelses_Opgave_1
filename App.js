@@ -11,6 +11,10 @@ import ConsultantList from './components/ConsultantList';
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 
+import CameraScreen from './components/CameraComponents.js/CameraScreen';
+import ImageScreen from './components/CameraComponents.js/ImageScreen';
+
+
 export default function App() {
   
   const firebaseConfig = {
@@ -44,25 +48,34 @@ export default function App() {
         <Stack.Screen name={'Consultant List'} component={ConsultantList} />
         <Stack.Screen name={'Consultant Profile'} component={ConsultantProfile} />
         <Stack.Screen name={'Edit Consultant'} component={AddEditConsultant} />
+        <Stack.Screen name={'Camera'} component={CameraScreen} />
+        <Stack.Screen name={'Image'} component={ImageScreen} />
       </Stack.Navigator>
     );
   };
+  
 
   return (
     <ConsultantProvider>
       <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen 
-            name={'Home'} 
-            component={StackNavigation} 
-            options={{ tabBarIcon: () => (<Ionicons name="home" size={20} />), headerShown: null }}
-          />
-          <Tab.Screen 
-            name={'Add'} 
-            component={AddEditConsultant} 
-            options={{ tabBarIcon: () => (<Ionicons name="add" size={20} />) }}
-          />
-        </Tab.Navigator>
+      <Tab.Navigator>
+  <Tab.Screen 
+    name={'Home'} 
+    component={StackNavigation} 
+    options={{ tabBarIcon: () => (<Ionicons name="home" size={20} />), headerShown: null }}
+  />
+  <Tab.Screen 
+    name={'Add'} 
+    component={AddEditConsultant} 
+    options={{ tabBarIcon: () => (<Ionicons name="add" size={20} />) }}
+  />
+  <Tab.Screen 
+    name={'Camera'} 
+    component={CameraScreen} 
+    options={{ tabBarIcon: () => (<Ionicons name="camera" size={20} />) }}
+  />
+</Tab.Navigator>
+
       </NavigationContainer>
     </ConsultantProvider>
   );
